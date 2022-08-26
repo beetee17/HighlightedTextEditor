@@ -22,6 +22,7 @@ public struct HighlightedTextEditor: UIViewRepresentable, HighlightingTextEditor
     }
 
     let highlightRules: [HighlightRule]
+    let font: UIFont
 
     private(set) var onEditingChanged: OnEditingChangedCallback?
     private(set) var onCommit: OnCommitCallback?
@@ -31,10 +32,12 @@ public struct HighlightedTextEditor: UIViewRepresentable, HighlightingTextEditor
 
     public init(
         text: Binding<String>,
-        highlightRules: [HighlightRule]
+        highlightRules: [HighlightRule],
+        font: UIFont = .preferredFont(forTextStyle: .body)
     ) {
         _text = text
         self.highlightRules = highlightRules
+        self.font = font
     }
 
     public func makeCoordinator() -> Coordinator {
@@ -45,6 +48,7 @@ public struct HighlightedTextEditor: UIViewRepresentable, HighlightingTextEditor
         let textView = UITextView()
         textView.delegate = context.coordinator
         updateTextViewModifiers(textView)
+        textView.font = font
 
         return textView
     }
@@ -65,6 +69,7 @@ public struct HighlightedTextEditor: UIViewRepresentable, HighlightingTextEditor
         }
         updateTextViewModifiers(uiView)
         runIntrospect(uiView)
+        uiView.font = font
         uiView.isScrollEnabled = true
         uiView.selectedTextRange = context.coordinator.selectedTextRange
         context.coordinator.updatingUIView = false
