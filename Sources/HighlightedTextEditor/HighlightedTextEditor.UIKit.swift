@@ -48,7 +48,6 @@ public struct HighlightedTextEditor: UIViewRepresentable, HighlightingTextEditor
         let textView = UITextView()
         textView.delegate = context.coordinator
         updateTextViewModifiers(textView)
-        textView.font = font
 
         return textView
     }
@@ -59,6 +58,7 @@ public struct HighlightedTextEditor: UIViewRepresentable, HighlightingTextEditor
 
         let highlightedText = HighlightedTextEditor.getHighlightedText(
             text: text,
+            font: self.font,
             highlightRules: highlightRules
         )
 
@@ -69,7 +69,6 @@ public struct HighlightedTextEditor: UIViewRepresentable, HighlightingTextEditor
         }
         updateTextViewModifiers(uiView)
         runIntrospect(uiView)
-        uiView.font = font
         uiView.isScrollEnabled = true
         uiView.selectedTextRange = context.coordinator.selectedTextRange
         context.coordinator.updatingUIView = false
