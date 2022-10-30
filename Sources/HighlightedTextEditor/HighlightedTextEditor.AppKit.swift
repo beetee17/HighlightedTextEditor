@@ -24,7 +24,8 @@ public struct HighlightedTextEditor: NSViewRepresentable, HighlightingTextEditor
             onTextChange?(text)
         }
     }
-
+    
+    let font: SystemFontAlias
     let highlightRules: [HighlightRule]
     
     private(set) var onEditingChanged: OnEditingChangedCallback?
@@ -35,10 +36,12 @@ public struct HighlightedTextEditor: NSViewRepresentable, HighlightingTextEditor
 
     public init(
         text: Binding<String>,
-        highlightRules: [HighlightRule]
+        highlightRules: [HighlightRule],
+        font: SystemFontAlias = .systemFont(ofSize: NSFont.systemFontSize)
     ) {
         _text = text
         self.highlightRules = highlightRules
+        self.font = font
     }
 
     public func makeCoordinator() -> Coordinator {

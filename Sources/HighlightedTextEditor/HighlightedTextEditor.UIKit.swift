@@ -22,7 +22,7 @@ public struct HighlightedTextEditor: UIViewRepresentable, HighlightingTextEditor
     }
 
     let highlightRules: [HighlightRule]
-    let font: UIFont
+    let font: SystemFontAlias
 
     private(set) var onEditingChanged: OnEditingChangedCallback?
     private(set) var onCommit: OnCommitCallback?
