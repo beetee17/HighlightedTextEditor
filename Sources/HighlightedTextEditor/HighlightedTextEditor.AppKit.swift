@@ -168,7 +168,7 @@ public extension HighlightedTextEditor {
             return scrollView
         }()
 
-        public lazy var textView: NSTextView = {
+        lazy var textView: BorderedNSTextView = {
             let contentSize = scrollView.contentSize
             let textStorage = NSTextStorage()
 
@@ -184,7 +184,7 @@ public extension HighlightedTextEditor {
 
             layoutManager.addTextContainer(textContainer)
 
-            let textView = NSTextView(frame: .zero, textContainer: textContainer)
+            let textView = BorderedNSTextView(frame: .zero, textContainer: textContainer)
             textView.autoresizingMask = .width
             textView.backgroundColor = NSColor.textBackgroundColor
             textView.delegate = self.delegate
@@ -197,6 +197,7 @@ public extension HighlightedTextEditor {
 
             return textView
         }()
+        
 
         // MARK: - Init
 
@@ -277,6 +278,17 @@ public extension HighlightedTextEditor {
             callback(range)
         }
         return editor
+    }
+}
+
+class BorderedNSTextView: NSTextView {
+    override func draw(_ rect: NSRect) {
+        super.draw(rect)
+        let border:NSBezierPath = NSBezierPath(rect: bounds)
+        let borderColor = NSColor.gray
+        borderColor.set()
+        border.lineWidth = 1.0
+        border.stroke()
     }
 }
 #endif
