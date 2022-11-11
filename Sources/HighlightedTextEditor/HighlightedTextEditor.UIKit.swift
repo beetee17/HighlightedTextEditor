@@ -21,6 +21,7 @@ public struct HighlightedTextEditor: UIViewRepresentable, HighlightingTextEditor
         }
     }
 
+    let placeholder: String?
     let highlightRules: [HighlightRule]
     let font: SystemFontAlias
 
@@ -32,10 +33,12 @@ public struct HighlightedTextEditor: UIViewRepresentable, HighlightingTextEditor
 
     public init(
         text: Binding<String>,
+        placeholder: String? = nil,
         highlightRules: [HighlightRule],
         font: UIFont = .preferredFont(forTextStyle: .body)
     ) {
         _text = text
+        self.placeholder = placeholder
         self.highlightRules = highlightRules
         self.font = font
     }
@@ -46,6 +49,9 @@ public struct HighlightedTextEditor: UIViewRepresentable, HighlightingTextEditor
 
     public func makeUIView(context: Context) -> UITextView {
         let textView = UITextView()
+        if let placeholder = placeholder {
+            textView.placeholder = placeholder
+        }
         textView.delegate = context.coordinator
         updateTextViewModifiers(textView)
 
@@ -55,7 +61,11 @@ public struct HighlightedTextEditor: UIViewRepresentable, HighlightingTextEditor
     public func updateUIView(_ uiView: UITextView, context: Context) {
         uiView.isScrollEnabled = false
         context.coordinator.updatingUIView = true
-
+        
+        if let placeholder = placeholder {
+            uiView.placeholder = placeholder
+        }
+        
         let highlightedText = HighlightedTextEditor.getHighlightedText(
             text: text,
             font: self.font,
@@ -154,5 +164,50 @@ public extension HighlightedTextEditor {
         new.onTextChange = callback
         return new
     }
+}
+extension UITextView {
+
+    private class PlaceholderLabel: UILabel { }
+
+    private var placeholderLabel: PlaceholderLabel {
+        if let label = subviews.compactMap( { $0 as? PlaceholderLabel }).first {
+            return label
+        } else {
+            let label = PlaceholderLabel(frame: .zero)
+            label.font = font
+            label.textColor = .placeholderText
+            addSubview(label)
+            return label
+        }
+    }
+
+    @IBInspectable
+    var placeholder: String {
+        get {
+            return subviews.compactMap( { $0 as? PlaceholderLabel }).first?.text ?? ""
+        }
+        set {
+            let placeholderLabel = self.placeholderLabel
+            placeholderLabel.text = newValue
+            placeholderLabel.numberOfLines = 1
+            placeholderLabel.translatesAutoresizingMaskIntoConstraints = false
+            addConstraint(placeholderLabel.widthAnchor.constraint(equalTo: widthAnchor))
+            addConstraint(placeholderLabel.topAnchor.constraint(equalTo: topAnchor, constant: textContainerInset.top))
+            addConstraint(placeholderLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: textContainer.lineFragmentPadding))
+            
+            textStorage.delegate = self
+        }
+    }
+
+}
+
+extension UITextView: NSTextStorageDelegate {
+
+    public func textStorage(_ textStorage: NSTextStorage, didProcessEditing editedMask: NSTextStorage.EditActions, range editedRange: NSRange, changeInLength delta: Int) {
+        if editedMask.contains(.editedCharacters) {
+            placeholderLabel.isHidden = !text.isEmpty
+        }
+    }
+
 }
 #endif
