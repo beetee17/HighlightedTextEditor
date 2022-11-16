@@ -162,7 +162,7 @@ public extension HighlightedTextEditor {
             scrollView.borderType = .noBorder
             scrollView.hasVerticalScroller = true
             scrollView.hasHorizontalRuler = false
-            scrollView.autoresizingMask = [.width, .maxButtonHeight]
+            scrollView.autoresizingMask = [.width, .maxYMargin]
             scrollView.translatesAutoresizingMaskIntoConstraints = false
 
             return scrollView
@@ -179,7 +179,7 @@ public extension HighlightedTextEditor {
             textContainer.widthTracksTextView = true
             textContainer.containerSize = NSSize(
                 width: contentSize.width,
-                maxButtonHeight: CGFloat.greatestFiniteMagnitude
+                height: CGFloat.greatestFiniteMagnitude
             )
 
             layoutManager.addTextContainer(textContainer)
@@ -191,8 +191,8 @@ public extension HighlightedTextEditor {
             textView.drawsBackground = true
             textView.isHorizontallyResizable = false
             textView.isVerticallyResizable = true
-            textView.maxSize = NSSize(width: CGFloat.greatestFiniteMagnitude, maxButtonHeight: CGFloat.greatestFiniteMagnitude)
-            textView.minSize = NSSize(width: 0, maxButtonHeight: contentSize.maxButtonHeight)
+            textView.maxSize = NSSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
+            textView.minSize = NSSize(width: 0, height: contentSize.height)
             textView.textColor = NSColor.labelColor
 
             return textView
